@@ -85,9 +85,9 @@ public virtual with sharing class fflib_SObjectDomain
 	public Configuration Configuration {get; private set;}    
 		
 	/**
-	 * Useful during unit testign to assert at a more granular and robust level for errors raised during the various trigger events
+	 * DEPRECATED, This property has been moved to fflib_SObjects
 	 **/	
-	public static ErrorFactory Errors  {get; private set;}
+	public static fflib_SObjects.ErrorFactory Errors  = fflib_SObjects.Errors;
 	
 	/**
 	 * Useful during unit testing to access mock support for database inserts and updates (testing without DML)
@@ -106,8 +106,6 @@ public virtual with sharing class fflib_SObjectDomain
 
 	static
 	{
-		Errors = new ErrorFactory();
-		
 		Test = new TestFactory();
 		
 		TriggerStateByClass = new Map<Type, List<fflib_SObjectDomain>>();
@@ -659,7 +657,7 @@ public virtual with sharing class fflib_SObjectDomain
 	/**
 	 * Ensures logging of errors in the Domain context for later assertions in tests
 	 **/
-	public String error(String message, SObject record)
+	public override String error(String message, SObject record)
 	{
 		return Errors.error(this, message, record);	
 	}
@@ -667,99 +665,30 @@ public virtual with sharing class fflib_SObjectDomain
 	/**
 	 * Ensures logging of errors in the Domain context for later assertions in tests
 	 **/
-	public String error(String message, SObject record, SObjectField field)
+	public override String error(String message, SObject record, SObjectField field)
 	{
 		return Errors.error(this, message, record, field);	
 	}
 	
 	/**
-	 * Ensures logging of errors in the Domain context for later assertions in tests
+	 * DEPRECATED, This class has been moved to fflib_SObjects
 	 **/
-	public class ErrorFactory
-	{
-		private List<Error> errorList = new List<Error>(); 
-		
-		private ErrorFactory()
-		{
-			
-		}
-		
-		public String error(String message, SObject record)
-		{
-			return error(null, message, record);	
-		}
+	public class ErrorFactory extends fflib_SObjects.ErrorFactory { }
 
-		private String error(fflib_SObjectDomain domain, String message, SObject record)
-		{
-			ObjectError objectError = new ObjectError();
-			objectError.domain = domain;
-			objectError.message = message;
-			objectError.record = record;
-			errorList.add(objectError);
-			return message;	
-		}
-		
-		public String error(String message, SObject record, SObjectField field)
-		{
-			return error(null, message, record, field);	
-		}
+	/**
+	 * DEPRECATED, This class has been moved to fflib_SObjects
+	 **/
+	public virtual class FieldError extends fflib_SObjects.FieldError { }
+	
+	/**
+	 * Ensures logging of errors in the Domain context for later assertions in tests
+	 **/
+	public virtual class ObjectError extends fflib_SObjects.ObjectError { }
 
-		private String error(fflib_SObjectDomain domain, String message, SObject record, SObjectField field)
-		{
-			FieldError fieldError = new FieldError();
-			fieldError.domain = domain;
-			fieldError.message = message;
-			fieldError.record = record;
-			fieldError.field = field;
-			errorList.add(fieldError);
-			return message;	
-		}	
-			
-		public List<Error> getAll()
-		{ 
-			return errorList.clone();
-		}
-		
-		public void clearAll()
-		{
-			errorList.clear();
-		}					
-	}
-	
 	/**
 	 * Ensures logging of errors in the Domain context for later assertions in tests
 	 **/
-	public virtual class FieldError extends ObjectError
-	{
-		public SObjectField field;
-		
-		public FieldError()
-		{		
-			
-		}
-	}
-	
-	/**
-	 * Ensures logging of errors in the Domain context for later assertions in tests
-	 **/
-	public virtual class ObjectError extends Error
-	{
-		public SObject record;
-		
-		public ObjectError()
-		{
-		
-		}
-	}
-	
-	/**
-	 * Ensures logging of errors in the Domain context for later assertions in tests
-	 **/
-	public abstract class Error
-	{
-		public String message;
-		public fflib_SObjectDomain domain;
-	}
+	public abstract class Error extends fflib_SObjects.Error { }
 
 	/**
 	 * Provides test context mocking facilities to unit tests testing domain classes
