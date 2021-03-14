@@ -1,12 +1,12 @@
 {
     "packageDirectories": [
         {
-            "path": "sfdx-source/apex-common",
-            "default": true
-        },
-        {
             "path": "sfdx-source/apex-mocks",
             "default": false
+        },
+        {
+            "path": "sfdx-source/apex-common",
+            "default": true
         }
     ],
     "namespace": "",
