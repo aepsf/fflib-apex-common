@@ -1,0 +1,10 @@
+{
+    "orgName": "apex-common",
+    "edition": "Developer",
+    "release": "previous",
+    "settings": {
+        "lightningExperienceSettings": {
+            "enableS1DesktopEnabled": true
+        }
+    }
+}
